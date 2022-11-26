@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: arahmoun <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/24 11:08:17 by arahmoun          #+#    #+#             */
+/*   Updated: 2022/11/24 11:09:52 by arahmoun         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 size_t	ft_strlen(const char *str)
@@ -8,6 +20,22 @@ size_t	ft_strlen(const char *str)
 	while (str[i])
 		i++;
 	return (i);
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	int		i;
+	char	*val;
+
+	i = 0;
+	val = (char *)s;
+	while ((char )c != s[i] && s[i] != '\0')
+		i++;
+	if ((char )c == s[i])
+		return (val + i);
+	else if (!s[i])
+		return (NULL);
+	return (NULL);
 }
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
@@ -39,7 +67,7 @@ char	*ft_strdup(const char *s1)
 	return (re);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	size_t	len;
 	size_t	i;
@@ -62,5 +90,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (s2[a])
 		re[i++] = s2[a++];
 	re[i] = '\0';
+	free(s1);
 	return (re);
 }

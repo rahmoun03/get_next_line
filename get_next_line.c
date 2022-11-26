@@ -1,62 +1,88 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: arahmoun <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/24 11:08:02 by arahmoun          #+#    #+#             */
+/*   Updated: 2022/11/24 11:08:05 by arahmoun         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-int line = 0;
 char	*ft_set_line(char *str)
 {
-	int i;
-	char *re;
+	int			i;
+	char		*val;
+	static char	*result;
 
-	i = line;
-	while (str[i] && str[i] != '\n')
+	if (!result)
+		result = (char *)malloc(1);
+	i = 0;
+	while (str[i])
 	{
-		printf("%c | ", str[i]);
+		if (str[i] == '\n')
+			break ;
 		i++;
 	}
-	str = str + line;
-	line = i + 1;
-	str[i + 1] = '\0';
-	re = ft_strdup(str);
-	return (re);
+	val = (char *)malloc(i + 1);
+	ft_strlcpy(val, str, i + 2);
+	result = (char *)malloc(ft_strlen(str) - i + 1);
+	ft_strlcpy(result, str + i, ft_strlen(str) - i + 2);
+	free(str);
+	return (val);
 }
 
 char	*get_next_line(int fd)
 {
-	char *p;
-	char *re;
-	ssize_t a[1];
+	char	*p[3];
+	ssize_t	a;
 
-	a[0] = 1;
-	re = (char *)malloc(1);
-	while (a[0] != 0)
+	a = 1;
+	if (fd < 0)
+		return (NULL);
+	p[0] = (char *)malloc(1);
+	p[1] = (char *)malloc(BUFFER_SIZE + 1);
+	if (!p[1] || !p[0] || BUFFER_SIZE <= 0)
+		return (NULL);
+	while (a != 0 && !ft_strchr(p[0], '\n'))
 	{
-		p = (char *)malloc(BUFFER_SIZE + 1);
-		a[0] = read(fd, p, BUFFER_SIZE);
-		p[a[0]] = '\0';
-		if(a[0] != 0)
-			re = ft_strjoin(re, p);
-		free(p);
+		a = read(fd, p[1], BUFFER_SIZE);
+		p[1][a] = '\0';
+		if (a != 0)
+			p[0] = ft_strjoin(p[0], p[1]);
+		if (a < 0 || p[1][0] == '\0')
+		{
+			free(p[0]);
+			free(p[1]);
+			return (NULL);
+		}
 	}
-	re = ft_set_line(re);
-	return (re);
+	free(p[1]);
+	return (ft_set_line(p[0]));
 }
 
-int main()
-{
-	int fd = open("test.txt", O_CREAT | O_RDWR);
+// int main()
+// {
+// 	int fd = open("test.txt", O_CREAT | O_RDWR);
 
-	printf(">>%s", get_next_line(fd));
-	printf("%d.\n", line);
-	printf(">>%s", get_next_line(fd));
-	printf("%d.\n", line);
-	printf(">>%s", get_next_line(fd));
-	printf("%d.\n", line);
-	//  printf("%s", get_next_line(fd));
-}
+// 	printf("%s", get_next_line(fd));//1
+// 	printf("%s", get_next_line(fd));//2
+// 	printf("%s", get_next_line(fd));//3
+// 	printf("%s", get_next_line(fd));//4
+// 	printf("%s", get_next_line(fd));//5
+// 	// printf("%s", get_next_line(fd));//6
+// 	// printf("%s", get_next_line(fd));//7
+// 	// printf("%s", get_next_line(fd));//8
+
+// }
 /*
 				< I Love get_next_line >
 					-----------------
 						^__^
 						(oo)|_______
 						(__)|       )\
-							||----w |
-							||     ||          */
+							||---ww |
+							||     ||    */
