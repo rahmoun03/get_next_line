@@ -12,71 +12,55 @@
 
 #include "get_next_line.h"
 
-char	*ft_set_line(char *str)
+char	*ft_line(char *ptr)
 {
-	int			i;
-	char		*val;
-	static char	*result;
+	static char *sv;
+	char *re;
+	int i;
 
-	if (!result)
-		result = (char *)malloc(1);
 	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '\n')
-			break ;
+	if(sv)
+		ptr = ft_strjoin(sv, ptr);
+	while (ptr[i] != '\n' && ptr[i] != '\0')
 		i++;
-	}
-	val = (char *)malloc(i + 1);
-	ft_strlcpy(val, str, i + 2);
-	result = (char *)malloc(ft_strlen(str) - i + 1);
-	ft_strlcpy(result, str + i, ft_strlen(str) - i + 2);
-	free(str);
-	return (val);
+	re = (char *)malloc(i + 1);
+	ft_strlcpy(re, ptr, i + 2);
+	sv = (char *)malloc(ft_strlen(ptr) - i + 1);
+	ft_strlcpy(sv, ptr + i + 1, ft_strlen(ptr) - i + 1);
+	return (re);
 }
 
 char	*get_next_line(int fd)
 {
-	char	*p[3];
-	ssize_t	a;
+	ssize_t a;
+	char *dst;
+	char *ptr;
 
 	a = 1;
-	if (fd < 0)
-		return (NULL);
-	p[0] = (char *)malloc(1);
-	p[1] = (char *)malloc(BUFFER_SIZE + 1);
-	if (!p[1] || !p[0] || BUFFER_SIZE <= 0)
-		return (NULL);
-	while (a != 0 && !ft_strchr(p[0], '\n'))
+	ptr = (char *)malloc(1);
+	while (a != 0 && !ft_strchr(ptr, '\n'))
 	{
-		a = read(fd, p[1], BUFFER_SIZE);
-		p[1][a] = '\0';
-		if (a != 0)
-			p[0] = ft_strjoin(p[0], p[1]);
-		if (a < 0 || p[1][0] == '\0')
-		{
-			free(p[0]);
-			free(p[1]);
-			return (NULL);
-		}
+		dst = (char *)malloc(BUFFER_SIZE + 1);
+		if(!dst || !ptr)
+			return NULL;
+		a = read(fd, dst, BUFFER_SIZE);
+		dst[a] = '\0';
+		ptr = ft_strjoin(ptr, dst);
 	}
-	free(p[1]);
-	return (ft_set_line(p[0]));
+	return (ft_line(ptr));
 }
 
 // int main()
 // {
 // 	int fd = open("test.txt", O_CREAT | O_RDWR);
 
-// 	printf("%s", get_next_line(fd));//1
-// 	printf("%s", get_next_line(fd));//2
-// 	printf("%s", get_next_line(fd));//3
-// 	printf("%s", get_next_line(fd));//4
-// 	printf("%s", get_next_line(fd));//5
-// 	// printf("%s", get_next_line(fd));//6
-// 	// printf("%s", get_next_line(fd));//7
-// 	// printf("%s", get_next_line(fd));//8
-
+// 	printf("%s%s", "1->", get_next_line(fd));//1
+// 	printf("%s%s", "2->", get_next_line(fd));//2
+// 	printf("%s%s", "3->", get_next_line(fd));//3
+// 	printf("%s%s", "4->", get_next_line(fd));//4
+// 	printf("%s%s", "5->", get_next_line(fd));//5
+// 	printf("%s%s", "6->", get_next_line(fd));//6
+// 	// printf("%s\n\n\n\n\n", get_next_line(fd));//7
 // }
 /*
 				< I Love get_next_line >

@@ -74,8 +74,6 @@ char	*ft_strjoin(char *s1, char *s2)
 	size_t	a;
 	char	*re;
 
-	if (!(s1) || !(s2))
-		return (NULL);
 	i = 0;
 	len = ft_strlen(s1) + ft_strlen(s2);
 	re = (char *)malloc(len + 1);
@@ -91,5 +89,6 @@ char	*ft_strjoin(char *s1, char *s2)
 		re[i++] = s2[a++];
 	re[i] = '\0';
 	free(s1);
+	free(s2);
 	return (re);
 }
