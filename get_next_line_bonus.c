@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: arahmoun <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/24 11:08:02 by arahmoun          #+#    #+#             */
-/*   Updated: 2022/11/24 11:08:05 by arahmoun         ###   ########.fr       */
+/*   Created: 2022/12/11 17:32:25 by arahmoun          #+#    #+#             */
+/*   Updated: 2022/12/11 17:32:28 by arahmoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*gnl_rest(char *ptr)
 {
@@ -89,15 +89,15 @@ char	*gnl_read(int fd, char *ptr)
 
 char	*get_next_line(int fd)
 {
-	static char	*ptr;
+	static char	*ptr[OPEN_MAX];
 	char		*re;
 
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
-	ptr = gnl_read(fd, ptr);
-	if (!ptr)
+	ptr[fd] = gnl_read(fd, ptr[fd]);
+	if (!ptr[fd])
 		return (NULL);
-	re = ft_line(ptr);
-	ptr = gnl_rest(ptr);
+	re = ft_line(ptr[fd]);
+	ptr[fd] = gnl_rest(ptr[fd]);
 	return (re);
 }
